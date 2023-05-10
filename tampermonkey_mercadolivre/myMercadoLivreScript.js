@@ -12,15 +12,28 @@
 
 
 (function() {
-    'use strict';    
+    'use strict';
     //$( ".nav-bounds" ).hide(); // esconde barra de navegação // ative apenas para esconder o menu do topo e ter certeza que o código funciona
 
+//    localStorage.clear();
+
+
     const links = document.querySelectorAll('a');
+    console.log("links")
+    console.log(links)
     var listaArmazenada = verListaLinksAnuncios();
     console.log("listaArmazenada");
     console.log(listaArmazenada);
 
+
     listaArmazenada.forEach((linkArmazenado) => {
+
+        /*
+        if ( linkArmazenado.indexOf("lista.mercadolivre") ) {
+            console.log("entri no indexOf")
+            deletaItemNaLista("linkArmazenado")
+        }
+        */
         console.log("linkArmazenado: " + linkArmazenado);
         buscaLink(linkArmazenado, links);
     })
@@ -145,11 +158,48 @@
     function adicionaItemNaLista(item) {
         // Verifica se a chave "minhaLista" já existe no localStorage
 
+        // permite adicionar apenas links que contenham
+
+        if (item.indexOf("produto.mercadolivre") > -1) {
+            console.log("if do indexOf: "+item)
+        } else {
+            console.log("else do indexOf: "+item)
+            return
+        }
+
+        console.log("saiu do indexOf: ")
+
         var minhaListaJSON = localStorage.getItem("minhaLista");
         var minhaLista = minhaListaJSON ? new Set(JSON.parse(minhaListaJSON)) : new Set();
 
         // Adiciona novas strings ao array
         minhaLista.add(item);
+
+        // Converte o array em uma string JSON
+        var listaJSON = JSON.stringify(Array.from(minhaLista));
+
+        // Armazena a string JSON no localStorage com a chave "minhaLista"
+        localStorage.setItem("minhaLista", listaJSON);
+
+        // Recupera a string JSON do localStorage
+        var listaArmazenadaJSON = localStorage.getItem("minhaLista");
+
+        // Converte a string JSON de volta para um array
+        var listaArmazenada = JSON.parse(listaArmazenadaJSON);
+
+        // Exibe o array no console
+        console.log("listaArmazenada");
+        console.log(listaArmazenada);
+    }
+
+    function deletaItemNaLista(item) {
+        // Verifica se a chave "minhaLista" já existe no localStorage
+
+        var minhaListaJSON = localStorage.getItem("minhaLista");
+        var minhaLista = minhaListaJSON ? new Set(JSON.parse(minhaListaJSON)) : new Set();
+
+        // remove novas strings ao array
+        minhaLista.delete(item);
 
         // Converte o array em uma string JSON
         var listaJSON = JSON.stringify(Array.from(minhaLista));
@@ -180,7 +230,8 @@
             if (href && href.indexOf(url) > -1 ) {
                 console.log('Encontrado v1: ', links[i]);
                 console.log('Encontrado v2: ' + links[i]);
-                links[i].parentElement.parentElement.style.backgroundColor = "purple";
+                //links[i].parentElement.parentElement.style.backgroundColor = "purple";
+                links[i].parentElement.parentElement.style.display = "none";
             } else {
                 console.log('não Encontrado: ');
             }
